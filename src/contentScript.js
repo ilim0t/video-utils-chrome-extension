@@ -1,31 +1,58 @@
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 const playbackRate = 3.0;
 
-const func = () => {
-    const video = Array.from(document.getElementsByTagName("video"));
-    video.forEach(element => {
-        console.debug("Processing for Video elements");
 
-        // element.addEventListener('loadeddata', () => video.playbackRate = playbackRate, false);
-        element.playbackRate = playbackRate;
+async function inject(element) {
+    console.log(`[jnject] ${element.src}, readyState: ${element.readyState}, time: ${Date.now().toLocaleString()}`);
+    element.playbackRate = playbackRate;
+
+    element.addEventListener("loadeddata", (event) => {
+        // element.playbackRate = playbackRate;
+        console.log(`[loadeddata] ${element.src}, readyState: ${element.readyState}, time: ${Date.now().toLocaleString()}`);
 
         // niconico fix
-        Object.defineProperty(element, 'playbackRate', {
-            get: () => { console.debug("geted"); return 1.0 },
-            set: x => { console.debug(`set x: ${x}`) }
-        })
+        // const descriptor = Object.create(null); // 意図しないキーの継承を防止します。
+        // descriptor.value = 3.0;
 
-        // Auto tab close
-        element.addEventListener('ended', () => {
-            console.debug("Listen ended event");
-            chrome.runtime.sendMessage({ videoEnded: true })
-        }, false);
-    });
-}
+        // 既定で継承不可、変更不可、書換不可のプロパティとなります。
+        // Object.defineProperty(document.getElementsByTagName("video")[0], 'playbackRate', descriptor);
+        // Object.defineProperty(element, "playbackRate", {
+        //     get: () => { console.debug("geted"); return 1.0 },
+        //     set: x => { console.debug(`set x: ${x}`) }
+        // })
+    }, false);
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.audiostarted) {
-        console.debug("Executing content process");
-        func();
+
+    // Auto tab close
+    element.addEventListener("ended", () => {
+        console.log(`[ended] ${element.src}, readyState: ${element.readyState}, time: ${Date.now().toLocaleString()}`);
+        // await wait(500);
+        if (element.currentTime >= element.duration) {
+            chrome.runtime.sendMessage({ videoEnded: true });
+        }
+    }, false);
+};
+
+
+const observer = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+        for (const addedNode of mutation.addedNodes) {
+            const { tagName, parentElement, src } = addedNode;
+            if (!parentElement || !src) {
+                continue;
+            }
+            if (tagName == "AUDIO" || tagName == "VIDEO") {
+                inject(addedNode);
+            }
+        }
     }
-})
+});
+
+observer.observe(document, {
+    childList: true,
+    subtree: true
+
+});
+
+Array.from(document.getElementsByTagName("video"))
+    .forEach(element => inject(element));
