@@ -1,6 +1,17 @@
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 const playbackRate = 3.0;
 
+let domains = []
+
+const file = "default_sites.json";
+fetch(chrome.extension.getURL(file))
+    .then(async response => {
+        domains = await response.json();
+}).catch(e => {
+    console.error(e);
+});
+  
+
 
 async function inject(element) {
     console.log(`[jnject] ${element.src}, readyState: ${element.readyState}, time: ${Date.now().toLocaleString()}`);
@@ -27,9 +38,14 @@ async function inject(element) {
     element.addEventListener("ended", () => {
         console.log(`[ended] ${element.src}, readyState: ${element.readyState}, time: ${Date.now().toLocaleString()}`);
         // await wait(500);
-        if (element.currentTime >= element.duration) {
-            chrome.runtime.sendMessage({ videoEnded: true });
+
+        if (!domains.includes(document.domain)) {
+            return;
         }
+        if (element.currentTime < element.duration) {
+            return;
+        }
+        chrome.runtime.sendMessage({ videoEnded: true });
     }, false);
 };
 

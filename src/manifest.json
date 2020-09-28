@@ -14,5 +14,6 @@
       "run_at": "document_end",
       "js": ["contentScript.js"]
     }
-  ]
+  ],
+  "web_accessible_resources": ["default_sites.json"]
 }
