@@ -1,0 +1,25 @@
+{
+  "name": "video-utils-chrome-extension",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint --ext .js --fix ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ilim0t/video-utils-chrome-extension.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ilim0t/video-utils-chrome-extension/issues"
+  },
+  "homepage": "https://github.com/ilim0t/video-utils-chrome-extension#readme",
+  "devDependencies": {
+    "eslint": "^7.10.0",
+    "eslint-config-prettier": "^6.12.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "prettier": "^2.1.2"
+  }
+}
