@@ -3,7 +3,10 @@
   "version": "0.1",
   "description": "It provides a useful feature for watching videos.",
   "manifest_version": 2,
-  "permissions": ["tabs"],
+  "permissions": ["tabs", "storage"],
+  "browser_action": {
+    "default_popup": "popup.html"
+  },
   "background": {
     "scripts": ["background.js"],
     "persistent": false

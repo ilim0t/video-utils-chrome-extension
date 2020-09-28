@@ -61,7 +61,17 @@ async function inject(element) {
       if (element.currentTime < element.duration) {
         return;
       }
-      chrome.runtime.sendMessage({ videoEnded: true });
+
+      new Promise((resolve) =>
+        chrome.storage.sync.get("autoclose", (value) =>
+          resolve(value.autoclose)
+        )
+      ).then((autoclose) => {
+        if (!autoclose) {
+          return;
+        }
+        chrome.runtime.sendMessage({ videoEnded: true });
+      });
     },
     false
   );
