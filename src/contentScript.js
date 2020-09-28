@@ -18,7 +18,7 @@ async function inject(element) {
       element.readyState
     }, time: ${Date.now().toLocaleString()}`
   );
-  element.playbackRate = playbackRate;
+  // element.playbackRate = playbackRate;
 
   element.addEventListener(
     "loadeddata",
