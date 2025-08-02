@@ -1,15 +1,20 @@
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const playbackRate = 3.0;
 
+// サイトリストの初期化
 let domains = [];
+let isInitialized = false;
 
+// サイトリストの読み込み
 const file = "default_sites.json";
 fetch(chrome.runtime.getURL(file))
   .then(async (response) => {
     domains = await response.json();
+    isInitialized = true;
   })
   .catch((e) => {
-    console.error(e);
+    console.error('Failed to load site list:', e);
+    isInitialized = true;
   });
 
 async function inject(element) {
@@ -55,22 +60,26 @@ async function inject(element) {
       );
       // await wait(500);
 
+      // 初期化が完了していない場合は終了
+      if (!isInitialized) {
+        return;
+      }
+
+      // 対象ドメインでない場合は終了
       if (!domains.includes(document.domain)) {
         return;
       }
+
+      // 動画が最後まで再生されていない場合は終了
       if (element.currentTime < element.duration) {
         return;
       }
 
-      new Promise((resolve) =>
-        chrome.storage.sync.get("autoclose", (value) =>
-          resolve(value.autoclose)
-        )
-      ).then((autoclose) => {
-        if (!autoclose) {
-          return;
+      // 自動クローズの状態を確認
+      chrome.storage.sync.get("autoclose", value => {
+        if (value.autoclose) {
+          chrome.runtime.sendMessage({ videoEnded: true });
         }
-        chrome.runtime.sendMessage({ videoEnded: true });
       });
     },
     false
