@@ -1,12 +1,36 @@
 const checkbox = document.getElementById("autoclose");
+const statusText = document.getElementById("status");
+const siteList = document.getElementById("siteList");
+
+// チェックボックスの状態変更時の処理
 checkbox.addEventListener("change", (event) => {
   const { checked } = event.target;
-  console.log(`change to ${checked}`);
   chrome.storage.sync.set({ autoclose: checked });
+  updateStatus(checked);
 });
 
+// 状態の更新
+function updateStatus(enabled) {
+  statusText.textContent = enabled ? "有効" : "無効";
+  statusText.className = enabled ? "font-medium text-green-600" : "font-medium text-gray-600";
+}
+
+// サイトリストの表示
+fetch(chrome.runtime.getURL("default_sites.json"))
+  .then(response => response.json())
+  .then(domains => {
+    domains.forEach(domain => {
+      const li = document.createElement("li");
+      li.textContent = domain;
+      li.className = "text-sm text-gray-600";
+      siteList.appendChild(li);
+    });
+  })
+  .catch(console.error);
+
+// 保存された状態の復元
 chrome.storage.sync.get("autoclose", (value) => {
-  const { autoclose } = value;
+  const autoclose = value.autoclose ?? false;
   checkbox.checked = autoclose;
-  console.log(`restore to ${autoclose}`);
+  updateStatus(autoclose);
 });

@@ -1,7 +1,7 @@
 {
-  "name": "Auto Close Video Tab",
+  "name": "Video Utils",
   "version": "0.1",
-  "description": "動画再生終了後に自動でタブを閉じる拡張機能",
+  "description": "It provides a useful feature for watching videos.",
   "manifest_version": 3,
   "permissions": ["tabs", "storage"],
   "action": {

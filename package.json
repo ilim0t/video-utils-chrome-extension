@@ -1,25 +1,29 @@
 {
-  "name": "video-utils-chrome-extension",
+  "name": "auto-close-video-tab",
   "version": "0.1.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Chrome extension to automatically close video tabs after playback",
+  "private": true,
   "scripts": {
-    "lint": "eslint --ext .js --fix ."
+    "build": "npm run clean && npm run copy-files",
+    "clean": "rm -rf dist",
+    "copy-files": "mkdir -p dist && cp -r src/* dist/",
+    "lint": "eslint --ext .js --fix .",
+    "format": "prettier --write \"src/**/*.{js,json,html}\""
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ilim0t/video-utils-chrome-extension.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "ilim0t",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/ilim0t/video-utils-chrome-extension/issues"
   },
   "homepage": "https://github.com/ilim0t/video-utils-chrome-extension#readme",
   "devDependencies": {
-    "eslint": "^7.10.0",
-    "eslint-config-prettier": "^6.12.0",
-    "eslint-plugin-prettier": "^3.1.4",
-    "prettier": "^2.1.2"
+    "eslint": "^8.45.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "prettier": "^3.0.0"
   }
 }

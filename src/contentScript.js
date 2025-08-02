@@ -4,7 +4,7 @@ const playbackRate = 3.0;
 let domains = [];
 
 const file = "default_sites.json";
-fetch(chrome.extension.getURL(file))
+fetch(chrome.runtime.getURL(file))
   .then(async (response) => {
     domains = await response.json();
   })
