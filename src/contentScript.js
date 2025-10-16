@@ -1,5 +1,5 @@
-const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-const playbackRate = 3.0;
+// const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+// const playbackRate = 3.0;
 
 // 対象URLリストの初期化
 let targetUrls = [];
@@ -7,7 +7,7 @@ let isInitialized = false;
 
 // 現在のURLが対象URLで始まるかチェック
 const matchesTargetUrl = (url, targets) => {
-  return targets.some(target => url.startsWith(target));
+  return targets.some((target) => url.startsWith(target));
 };
 
 // 対象URLリストの読み込み
@@ -18,7 +18,7 @@ fetch(chrome.runtime.getURL(file))
     isInitialized = true;
   })
   .catch((e) => {
-    console.error('Failed to load target URL list:', e);
+    console.error("Failed to load target URL list:", e);
     isInitialized = true;
   });
 
@@ -26,18 +26,18 @@ async function inject(element) {
   console.log(
     `[jnject] ${element.src}, readyState: ${
       element.readyState
-    }, time: ${Date.now().toLocaleString()}`
+    }, time: ${Date.now().toLocaleString()}`,
   );
   // element.playbackRate = playbackRate;
 
   element.addEventListener(
     "loadeddata",
-    (event) => {
+    () => {
       // element.playbackRate = playbackRate;
       console.log(
         `[loadeddata] ${element.src}, readyState: ${
           element.readyState
-        }, time: ${Date.now().toLocaleString()}`
+        }, time: ${Date.now().toLocaleString()}`,
       );
 
       // niconico fix
@@ -51,7 +51,7 @@ async function inject(element) {
       //     set: x => { console.debug(`set x: ${x}`) }
       // })
     },
-    false
+    false,
   );
 
   // Auto tab close
@@ -61,7 +61,7 @@ async function inject(element) {
       console.log(
         `[ended] ${element.src}, readyState: ${
           element.readyState
-        }, time: ${Date.now().toLocaleString()}`
+        }, time: ${Date.now().toLocaleString()}`,
       );
       // await wait(500);
 
@@ -82,13 +82,13 @@ async function inject(element) {
       }
 
       // 自動クローズの状態を確認
-      chrome.storage.sync.get("autoclose", value => {
+      chrome.storage.sync.get("autoclose", (value) => {
         if (value.autoclose) {
           chrome.runtime.sendMessage({ videoEnded: true });
         }
       });
     },
-    false
+    false,
   );
 }
 
@@ -112,5 +112,5 @@ observer.observe(document, {
 });
 
 Array.from(document.getElementsByTagName("video")).forEach((element) =>
-  inject(element)
+  inject(element),
 );

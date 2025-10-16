@@ -12,14 +12,16 @@ checkbox.addEventListener("change", (event) => {
 // 状態の更新
 function updateStatus(enabled) {
   statusText.textContent = enabled ? "有効" : "無効";
-  statusText.className = enabled ? "font-medium text-green-600" : "font-medium text-gray-600";
+  statusText.className = enabled
+    ? "font-medium text-green-600"
+    : "font-medium text-gray-600";
 }
 
 // 対象URLリストの表示
 fetch(chrome.runtime.getURL("default_sites.json"))
-  .then(response => response.json())
-  .then(targetUrls => {
-    targetUrls.forEach(url => {
+  .then((response) => response.json())
+  .then((targetUrls) => {
+    targetUrls.forEach((url) => {
       const li = document.createElement("li");
       li.textContent = url;
       li.className = "text-sm text-gray-600";
