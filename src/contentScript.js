@@ -1,19 +1,24 @@
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const playbackRate = 3.0;
 
-// サイトリストの初期化
-let domains = [];
+// 対象URLリストの初期化
+let targetUrls = [];
 let isInitialized = false;
 
-// サイトリストの読み込み
+// 現在のURLが対象URLで始まるかチェック
+const matchesTargetUrl = (url, targets) => {
+  return targets.some(target => url.startsWith(target));
+};
+
+// 対象URLリストの読み込み
 const file = "default_sites.json";
 fetch(chrome.runtime.getURL(file))
   .then(async (response) => {
-    domains = await response.json();
+    targetUrls = await response.json();
     isInitialized = true;
   })
   .catch((e) => {
-    console.error('Failed to load site list:', e);
+    console.error('Failed to load target URL list:', e);
     isInitialized = true;
   });
 
@@ -65,8 +70,9 @@ async function inject(element) {
         return;
       }
 
-      // 対象ドメインでない場合は終了
-      if (!domains.includes(document.domain)) {
+      // 現在のURLが対象URLでない場合は終了
+      const currentUrl = window.location.href;
+      if (!matchesTargetUrl(currentUrl, targetUrls)) {
         return;
       }
 

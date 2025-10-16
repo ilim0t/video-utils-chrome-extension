@@ -15,13 +15,13 @@ function updateStatus(enabled) {
   statusText.className = enabled ? "font-medium text-green-600" : "font-medium text-gray-600";
 }
 
-// サイトリストの表示
+// 対象URLリストの表示
 fetch(chrome.runtime.getURL("default_sites.json"))
   .then(response => response.json())
-  .then(domains => {
-    domains.forEach(domain => {
+  .then(targetUrls => {
+    targetUrls.forEach(url => {
       const li = document.createElement("li");
-      li.textContent = domain;
+      li.textContent = url;
       li.className = "text-sm text-gray-600";
       siteList.appendChild(li);
     });
